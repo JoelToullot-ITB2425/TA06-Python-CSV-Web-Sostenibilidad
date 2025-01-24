@@ -2,18 +2,18 @@
 
 ---
 
-## Moduls necesitats perque el codi funcioni
+## Mòduls necessitats perquè el codi funcioni
 ### - Colorama
 ### - tqdm
 
 ---
 
-## Pasos generals seguits per la creacio del codi
+## Passos generals seguits per la creació del codi
 Hem anat buscant informació en diferents llocs web i també utilitzant eines d'IA com ChatGPT i Copilot per trobar solucions a necessitats específiques en el codi.
 
 ---
 
-## Majors problemes trobats en el proces de creacio del codi
+## Majors problemes trobats en el procés de creació del codi
 - Verificació
 En la part de verificació hem anat trobant problemes per fer el codi 100% "Javiproof" com ara espais entre els números que representen els dies o les línies de capçalera o també si l'arxiu i te P1 que les altres línies hagi escrit P1 i no un altre.
 Hem anat solucionant aquests problemes principalment amb l'ajuda de ChatGPT, ja que cada cop que trobàvem un problema li especificàvem exhaustivament i amb exemples.
