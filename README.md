@@ -15,7 +15,7 @@ Hem anat buscant informació en diferents llocs web i també utilitzant eines d'
 
 ## Majors problemes trobats en el procés de creació del codi
 ### Verificació
-En la part de verificació hem anat trobant problemes per fer el codi 100% "Javiproof" com ara espais entre els números que representen els dies o les línies de capçalera o també si l'arxiu i te P1 que les altres línies hagi escrit P1 i no un altre.
+En la part de verificació hem anat trobant problemes per intentar fer el codi 100% "Javiproof" com ara espais entre els números que representen els dies o les línies de capçalera o també si l'arxiu i te P1 que les altres línies hagi escrit P1 i no un altre.
 Hem anat solucionant aquests problemes principalment amb l'ajuda de ChatGPT, ja que cada cop que trobàvem un problema li especificàvem exhaustivament i amb exemples.
 
 ### Logs
