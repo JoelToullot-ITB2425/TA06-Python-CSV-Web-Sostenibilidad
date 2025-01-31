@@ -139,7 +139,7 @@ def verificar_fitxers_dat_personalitzats(directori):
 
 def process_dat_files(directory):
     print(f"\n{Fore.CYAN}{'=' * 50}")
-    print(f"{'INICIANT PROCÉS D\'ANÀLISI DE DADES':^50}")
+    print(f"""{"INICIANT PROCÉS D'ANÀLISI DE DADES":^50}""")
     print(f"{'=' * 50}{Style.RESET_ALL}\n")
 
     total_files = 0
