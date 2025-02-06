@@ -1,8 +1,10 @@
+import csv
 import os
 import re
 import logging
 from tqdm import tqdm
 from colorama import Fore, Style
+
 
 def configurar_logging():
     logging.basicConfig(
@@ -131,6 +133,9 @@ def verificar_fitxers_dat_personalitzats(directori):
         print(f"{Fore.GREEN}Tots els arxius .dat són vàlids i sense errors{Style.RESET_ALL}")
         return True
 
+
+
+
 def process_dat_files(directory):
     print(f"\n{Fore.CYAN}{'=' * 50}")
     print(f"""{"INICIANT PROCÉS D'ANÀLISI DE DADES":^50}""")
@@ -230,8 +235,25 @@ def process_dat_files(directory):
         f"{Fore.YELLOW}Total de precipitacions en tots els anys analitzats:{Style.RESET_ALL} "
         f"{total_precipitation:,.2f} l/m²".replace(",", "."))
 
+    return yearly_totals, yearly_averages
+
+def export_to_csv(data, filename):
+    with open(filename, 'w', newline='', encoding='utf-8') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(['Any', 'Valor'])
+        for year, value in data.items():
+            writer.writerow([year, round(value, 2)])
+    print("\n")
+    print(f"{Fore.GREEN}Dades exportades a {filename}{Style.RESET_ALL}")
+
+
 configurar_logging()
+
 directori = './precip.MIROC5.RCP60.2006-2100.SDSM_REJ'
 
 if verificar_fitxers_dat_personalitzats(directori):
-    process_dat_files(directori)
+    _, yearly_averages = process_dat_files(directori)
+    export_to_csv(yearly_averages, 'mitjanes_anuals.csv')
+
+print(f"\n{Fore.CYAN}Resums estadístics exportats a CSV:{Style.RESET_ALL}")
+print("1. mitjanes_anuals.csv")
