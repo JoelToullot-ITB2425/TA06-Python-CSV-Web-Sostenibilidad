@@ -33,5 +33,5 @@ Per poder veure tot el funcionament del codi conjunt amb la web és recomanable 
 
 ---
 
-## Aquí teniu la web per poder visualitzar l'arxiu .csv generat pel codi, mostrant un gràfic web amb les dades dels arxius (He de triar l'arxiu .csv quan us demani de triar un fitxer).
+## Aquí teniu la web per poder visualitzar l'arxiu .csv generat pel codi, mostrant un gràfic web amb les dades dels arxius (Heo de triar l'arxiu .csv quan us demani de triar un fitxer).
 ### [Web](./Web/index.html)
