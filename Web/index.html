@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados y Gráficos</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<header>
+    <h1>Gràfics i estadistiques</h1>
+</header>
+
+<div class="container">
+    <h2>Precipitacions en Espanya</h2>
+    <p>A continuació es mostraran la mitjana de precipitacions anuals en Espanya.</p>
+
+    <!-- Botón para alternar entre gráficos -->
+    <button onclick="toggleGraphs()">Alternar Gráfico</button>
+
+    <!-- Gráfico Horizontal -->
+    <div class="grafico-container" id="graficoHorizontalContainer" style="height: 400px;">
+        <canvas id="graficoBarrasHorizontal"></canvas>
+    </div>
+
+    <!-- Gráfico Vertical -->
+    <div class="grafico-container" id="graficoBarrasVertical">
+        <canvas id="graficoBarrasVerticalCanvas"></canvas>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
