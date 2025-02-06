@@ -5,6 +5,7 @@
 ## Mòduls necessitats perquè el codi funcioni
 ### - Colorama
 ### - tqdm
+### - matplotlib
 
 ---
 
@@ -26,4 +27,9 @@ Nosaltres vam fer la part de verificar, en un codi diferent de la part d'analitz
 
 ---
 
+## Important!
+
+Per poder veure tot el funcionament del codi conjunt amb la web és recomanable descarregar-se el codi conjunt amb els arxius de dades (o extreure el ZIP) i primer executar-lo, i amb els resultats que et doni (arxiu .csv, gràfic i el .log) anar a la web i triar el fitxer .csv generat pel codi per poder mostrar un gràfic de web amb les dades dels arxius de precipitacions.
+
+## Aquí teniu la web per poder visualitzar l'arxiu .csv generat pel codi, mostrant un gràfic web amb les dades dels arxius.
 ### [Web](./Web/index.html)
