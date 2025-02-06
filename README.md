@@ -23,3 +23,5 @@ Després al moment de ja quasi tenir totes les verificacions fetes necessitàvem
 
 ### Ajuntar codis
 Nosaltres vam fer la part de verificar, en un codi diferent de la part d'analitzar dades, llavors al final hem hagut d'ajuntar-los els dos, hem trobat un problema que al moment d'ajuntar-los la part de verificació se la saltava, llavors per solucionar-ho hem anat mirant el codi comparant-ho amb el que la verificació sí que funcionava i vam trobar els errors.
+
+### Web [Web](./index.html)
