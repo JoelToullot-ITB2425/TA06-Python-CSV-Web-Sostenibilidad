@@ -4,7 +4,7 @@ import re
 import logging
 from tqdm import tqdm
 from colorama import Fore, Style
-
+import matplotlib.pyplot as plt
 
 def configurar_logging():
     logging.basicConfig(
@@ -66,7 +66,6 @@ def verificar_fitxers_dat_personalitzats(directori):
                         continue
 
                     any_inicial, any_final = int(match.group(1)), int(match.group(2))
-
                 else:
                     errors.append(f"Segona línia no present al fitxer {ruta_fitxer}")
                     continue
@@ -75,7 +74,6 @@ def verificar_fitxers_dat_personalitzats(directori):
 
                 for i, linia in enumerate(linies[2:], start=3):
                     linia = linia.strip()
-
                     if "  " in linia:
                         errors.append(f"Espais extres al fitxer {ruta_fitxer}, línia {i + 1}: {linia}")
 
@@ -107,7 +105,6 @@ def verificar_fitxers_dat_personalitzats(directori):
                         combinacions_any_mes.add(combinacio_any_mes)
 
                     dies = elements[3:]
-
                     if len(dies) != 31:
                         errors.append(f"Nombre incorrecte de dies al fitxer {ruta_fitxer}, línia {i}. "
                                       f"Esperats: 31, Trobats: {len(dies)}")
@@ -132,9 +129,6 @@ def verificar_fitxers_dat_personalitzats(directori):
     else:
         print(f"{Fore.GREEN}Tots els arxius .dat són vàlids i sense errors{Style.RESET_ALL}")
         return True
-
-
-
 
 def process_dat_files(directory):
     print(f"\n{Fore.CYAN}{'=' * 50}")
@@ -165,18 +159,17 @@ def process_dat_files(directory):
                         continue
 
                     year = int(values[1])
+                    # Converteix els valors: si és "-999" els tracta com a None
                     daily_values = [float(v) if v != "-999" else None for v in values[3:]]
-
                     valid_values = [v for v in daily_values if v is not None]
                     monthly_avg = sum(valid_values) / len(valid_values) if valid_values else 0
 
+                    # Si el valor és None, substitueix per un valor mínim (usant 0.8 del valor mitjà com a mínim)
                     daily_values = [v * adjustment_factor if v is not None else max(monthly_avg * 0.8, 0.1) * adjustment_factor for v in daily_values]
-
                     monthly_sum = sum(daily_values)
 
                     if year not in yearly_data:
                         yearly_data[year] = []
-
                     yearly_data[year].append(monthly_sum)
 
                     total_negative_999 += values[3:].count("-999")
@@ -193,7 +186,6 @@ def process_dat_files(directory):
     for year, monthly_sums in yearly_data.items():
         total_anual = sum(monthly_sums)
         media_anual = total_anual / len(monthly_sums) if monthly_sums else 0
-
         yearly_totals[year] = total_anual
         yearly_averages[year] = media_anual
 
@@ -208,8 +200,7 @@ def process_dat_files(directory):
 
     print(f"{Fore.CYAN}Mitjanes i totals anuals:{Style.RESET_ALL}")
     for year in sorted(yearly_totals):
-        print(
-            f"{Fore.YELLOW}Any {year}:{Style.RESET_ALL} Total: {yearly_totals[year]:,.2f} l/m², Mitjana: {yearly_averages[year]:.2f} l/m²")
+        print(f"{Fore.YELLOW}Any {year}:{Style.RESET_ALL} Total: {yearly_totals[year]:,.2f} l/m², Mitjana: {yearly_averages[year]:.2f} l/m²")
 
     print(f"\n{Fore.CYAN}Tendència de canvi:{Style.RESET_ALL}")
     sorted_years = sorted(yearly_totals.keys())
@@ -227,13 +218,9 @@ def process_dat_files(directory):
 
     print(f"\n{Fore.CYAN}Informació adicional:{Style.RESET_ALL}")
     max_avg_year = max(yearly_averages, key=yearly_averages.get)
-    print(
-        f"{Fore.YELLOW}Any amb la mitjana anual més alta:{Style.RESET_ALL} {max_avg_year} ({yearly_averages[max_avg_year]:.2f} l/m²)"
-    )
+    print(f"{Fore.YELLOW}Any amb la mitjana anual més alta:{Style.RESET_ALL} {max_avg_year} ({yearly_averages[max_avg_year]:.2f} l/m²)")
     total_precipitation = sum(yearly_totals.values())
-    print(
-        f"{Fore.YELLOW}Total de precipitacions en tots els anys analitzats:{Style.RESET_ALL} "
-        f"{total_precipitation:,.2f} l/m²".replace(",", "."))
+    print(f"{Fore.YELLOW}Total de precipitacions en tots els anys analitzats:{Style.RESET_ALL} {total_precipitation:,.2f} l/m²".replace(",", "."))
 
     return yearly_totals, yearly_averages
 
@@ -246,14 +233,80 @@ def export_to_csv(data, filename):
     print("\n")
     print(f"{Fore.GREEN}Dades exportades a {filename}{Style.RESET_ALL}")
 
+def plot_statistics(csv_filename):
+    """
+    Llegeix el CSV amb les mitjanes anuals i pinta un gràfic de línies.
+    Es destaquen amb anotacions els anys amb la precipitació màxima i mínima.
+    El gràfic es mostra per pantalla i també es desa en format PNG.
+    """
+    years = []
+    values = []
+    try:
+        with open(csv_filename, 'r', encoding='utf-8') as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                years.append(int(row['Any']))
+                values.append(float(row['Valor']))
+    except Exception as e:
+        print(f"Error al llegir el fitxer CSV: {e}")
+        return
 
-configurar_logging()
+    if not years or not values:
+        print("No s'han trobat dades per pintar el gràfic.")
+        return
 
-directori = './precip.MIROC5.RCP60.2006-2100.SDSM_REJ'
+    # Calcular els extrems
+    max_value = max(values)
+    max_year = years[values.index(max_value)]
+    min_value = min(values)
+    min_year = years[values.index(min_value)]
 
-if verificar_fitxers_dat_personalitzats(directori):
-    _, yearly_averages = process_dat_files(directori)
-    export_to_csv(yearly_averages, 'mitjanes_anuals.csv')
+    plt.figure(figsize=(12, 7))
+    plt.plot(years, values, marker='o', linestyle='-', label='Mitjana anual', color='blue', linewidth=2)
 
-print(f"\n{Fore.CYAN}Resums estadístics exportats a CSV:{Style.RESET_ALL}")
-print("1. mitjanes_anuals.csv")
+    # Marcadors i anotacions per l'any amb la màxima precipitació
+    plt.scatter(max_year, max_value, color='red', s=100, zorder=5)
+    plt.annotate(f"Máxim\n{max_year}\n{max_value:.2f} l/m²",
+                 xy=(max_year, max_value), xytext=(max_year, max_value + 0.05*max_value),
+                 arrowprops=dict(facecolor='red', shrink=0.05), horizontalalignment='center', fontsize=10)
+
+    # Marcadors i anotacions per l'any amb la mínima precipitació
+    plt.scatter(min_year, min_value, color='green', s=100, zorder=5)
+    plt.annotate(f"Mínim\n{min_year}\n{min_value:.2f} l/m²",
+                 xy=(min_year, min_value), xytext=(min_year, min_value - 0.30*min_value),
+                 arrowprops=dict(facecolor='green', shrink=0.05), horizontalalignment='center', fontsize=10)
+
+    # Línies verticals opcionals per extrems
+    plt.axvline(x=max_year, color='red', linestyle='--', linewidth=1, label=f'Any màxim: {max_year}')
+    plt.axvline(x=min_year, color='green', linestyle='--', linewidth=1, label=f'Any mínim: {min_year}')
+
+    plt.title('Evolució de la Precipitació Anual', fontsize=16, fontweight='bold')
+    plt.xlabel('Any', fontsize=14)
+    plt.ylabel('Precipitació (l/m²)', fontsize=14)
+    plt.legend(fontsize=12)
+    plt.grid(True, linestyle='--', alpha=0.7)
+    plt.tight_layout()
+
+    # Desa el gràfic en format PNG
+    output_png = 'grafico_precipitacion.png'
+    plt.savefig(output_png, dpi=300)
+    print(f"{Fore.GREEN}Gràfic desat en {output_png}{Style.RESET_ALL}")
+
+    plt.show()
+
+if __name__ == '__main__':
+    configurar_logging()
+
+    directori = './precip.MIROC5.RCP60.2006-2100.SDSM_REJ'
+
+    if verificar_fitxers_dat_personalitzats(directori):
+        # Processa els fitxers i obté les mitjanes anuals
+        _, yearly_averages = process_dat_files(directori)
+        csv_filename = 'mitjanes_anuals.csv'
+        export_to_csv(yearly_averages, csv_filename)
+
+        print(f"\n{Fore.CYAN}Resums estadístics exportats a CSV:{Style.RESET_ALL}")
+        print("1. mitjanes_anuals.csv")
+
+        # Mostra i desa els gràfics estadístics basats en el CSV exportat
+        plot_statistics(csv_filename)
